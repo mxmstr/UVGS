@@ -30,7 +30,7 @@ This repository contains an example of a C++ SteamVR driver.
     ```bash
     mkdir build
     cd build
-    cmake ..
+    cmake .. 
     # If OpenVR is not in the 'openvr' subdirectory:
     # cmake .. -DOpenVR_ROOT_DIR=/path/to/your/openvr/sdk
     ```
