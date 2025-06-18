@@ -1,0 +1,15 @@
+#pragma once
+
+#include <openvr_driver.h>
+
+class MyTrackedDeviceProvider : public vr::IServerTrackedDeviceProvider
+{
+public:
+    virtual vr::EVRInitError Init(vr::IVRDriverContext *pDriverContext) override;
+    virtual void Cleanup() override;
+    virtual const char * const *GetInterfaceVersions() override;
+    virtual void RunFrame() override;
+    virtual bool ShouldBlockStandby() override;
+    virtual void EnterStandby() override;
+    virtual void LeaveStandby() override;
+};
