@@ -1,0 +1,11 @@
+{
+    "manifest_version": 1,
+    "driver_name": "mydriver",
+    "driver_version": "0.0.1",
+    "binaries": {
+        "win64": "bin/driver_mydriver.dll",
+        "linux64": "bin/libdriver_mydriver.so",
+        "osx": "bin/libdriver_mydriver.dylib"
+    },
+    "driver_type": "server"
+}
