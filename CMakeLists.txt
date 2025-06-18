@@ -7,6 +7,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # --- OpenVR SDK ---
 # Expect OpenVR to be cloned into a subdirectory named 'openvr'
 # or provide its location via -DOpenVR_ROOT_DIR=<path_to_openvr_sdk>
+
+# Add OpenVR's cmake directory to the module path so find_package can locate FindOpenVR.cmake
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/openvr/cmake")
+# Also, set OpenVR_DIR to point to the SDK's root, as FindOpenVR.cmake might use it.
+# This assumes the user has cloned 'openvr' into the project root.
+set(OpenVR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/openvr)
+
 find_package(OpenVR REQUIRED)
 
 if(NOT OpenVR_FOUND)

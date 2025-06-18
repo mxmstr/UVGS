@@ -19,18 +19,18 @@ This repository contains an example of a C++ SteamVR driver.
     (Replace `<repository_url>` with the actual URL of this repository)
 
 2.  **Clone the OpenVR SDK:**
-    The driver requires the OpenVR SDK. Clone it into a subdirectory named `openvr` within the `OpenVRDriverExample` directory:
+    The driver requires the OpenVR SDK. It **must** be cloned into a subdirectory named `openvr` within the `OpenVRDriverExample` directory:
     ```bash
     git clone https://github.com/ValveSoftware/openvr.git openvr
     ```
-    If you clone it to a different location, you will need to specify the path to CMake using `-DOpenVR_ROOT_DIR=<path_to_openvr_sdk>`.
+    The `CMakeLists.txt` file is configured to find the OpenVR SDK in this specific relative path (`${CMAKE_CURRENT_SOURCE_DIR}/openvr`) by adding its `cmake` subdirectory to `CMAKE_MODULE_PATH` and setting `OpenVR_DIR`. If you place it elsewhere, you will need to adjust these paths in `CMakeLists.txt` or use `-DOpenVR_DIR=<path_to_openvr_sdk>` and potentially adjust `CMAKE_MODULE_PATH` during CMake configuration.
 
 3.  **Configure and Build with CMake:**
     Create a build directory and run CMake:
     ```bash
     mkdir build
     cd build
-    cmake ..
+    cmake .. 
     # If OpenVR is not in the 'openvr' subdirectory:
     # cmake .. -DOpenVR_ROOT_DIR=/path/to/your/openvr/sdk
     ```
