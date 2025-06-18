@@ -49,7 +49,7 @@ void MyTrackedDeviceProvider::RunFrame()
     // TODO: Update device poses or states here
 }
 
-bool MyTrackedDeviceProvider::ShouldBlockStandby()
+bool MyTrackedDeviceProvider::ShouldBlockStandbyMode()
 {
     return false;
 }

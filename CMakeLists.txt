@@ -9,30 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # or provide its location via -DOpenVR_ROOT_DIR=<path_to_openvr_sdk>
 
 set(OpenVR_SDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/openvr) # Define once
-set(OpenVR_CMAKE_MODULE_PATH ${OpenVR_SDK_DIR}/cmake)
 
-# Check if the expected FindOpenVR.cmake exists
-if(NOT EXISTS "${OpenVR_CMAKE_MODULE_PATH}/FindOpenVR.cmake")
-    message(FATAL_ERROR "OpenVR SDK not found or incomplete in the 'openvr' subdirectory. \n"
-                        "Please clone the OpenVR SDK from GitHub (https://github.com/ValveSoftware/openvr) \n"
-                        "into the 'openvr' directory at the root of this project. \n"
-                        "Expected path: ${OpenVR_CMAKE_MODULE_PATH}/FindOpenVR.cmake was not found.")
-endif()
-
-# Add OpenVR's cmake directory to the module path
-list(APPEND CMAKE_MODULE_PATH "${OpenVR_CMAKE_MODULE_PATH}")
-# Set OpenVR_DIR to point to the SDK's root
-set(OpenVR_DIR ${OpenVR_SDK_DIR})
-
-find_package(OpenVR REQUIRED)
-
-# This check is somewhat redundant now due to the manual check above and REQUIRED in find_package,
-# but it's good practice to keep it.
-if(NOT OpenVR_FOUND)
-    message(FATAL_ERROR "find_package(OpenVR REQUIRED) failed even after locating FindOpenVR.cmake. Check OpenVR SDK integrity and CMake logs.")
-endif()
-
-include_directories(${OpenVR_INCLUDE_DIR})
+include_directories(${OpenVR_SDK_DIR}/headers)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/driver/include)
 
 # --- Driver ---
 # Add our driver as a library
