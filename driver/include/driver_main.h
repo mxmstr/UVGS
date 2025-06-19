@@ -1,15 +1,28 @@
 #pragma once
 
 #include <openvr_driver.h>
+#include <memory> // Required for std::unique_ptr
 
-class MyTrackedDeviceProvider : public vr::IServerTrackedDeviceProvider
-{
-public:
-    virtual vr::EVRInitError Init(vr::IVRDriverContext *pDriverContext) override;
-    virtual void Cleanup() override;
-    virtual const char * const *GetInterfaceVersions() override;
-    virtual void RunFrame() override;
-    virtual bool ShouldBlockStandbyMode() override;
-    virtual void EnterStandby() override;
-    virtual void LeaveStandby() override;
+#include "my_controller_driver.h" // Include the new controller driver header
+
+namespace vr { // Added namespace
+
+class MyTrackedDeviceProvider : public vr::IServerTrackedDeviceProvider { // Added namespace
+ public:
+  MyTrackedDeviceProvider(); // Added constructor
+  virtual ~MyTrackedDeviceProvider(); // Added destructor
+
+  virtual vr::EVRInitError Init(vr::IVRDriverContext* pDriverContext) override;
+  virtual void Cleanup() override;
+  virtual const char* const* GetInterfaceVersions() override;
+  virtual void RunFrame() override;
+  virtual bool ShouldBlockStandbyMode() override;
+  virtual void EnterStandby() override;
+  virtual void LeaveStandby() override;
+
+ private: // Added private section
+  std::unique_ptr<MyControllerDriver> left_controller_;
+  std::unique_ptr<MyControllerDriver> right_controller_;
 };
+
+}  // namespace vr // Added namespace
