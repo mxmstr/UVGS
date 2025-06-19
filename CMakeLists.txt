@@ -15,7 +15,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/driver/include)
 
 # --- Driver ---
 # Add our driver as a library
-add_library(MyDriver SHARED driver/src/driver_main.cpp driver/include/driver_main.h)
+add_library(MyDriver SHARED
+    driver/src/driver_main.cpp
+    driver/include/driver_main.h
+    driver/src/my_controller_driver.cpp # Added new controller source file
+)
 
 # Link our driver against OpenVR
 target_link_libraries(MyDriver PRIVATE ${OpenVR_LIBRARIES})
