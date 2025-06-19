@@ -2,51 +2,62 @@
 
 #include <openvr_driver.h>
 #include <vector> // Required for GetInterfaceVersions
+#include "my_controller_driver.h" // Include the controller driver
+
+// Define the vr namespace
+namespace vr {
 
 // Global entry point
 vr::IServerTrackedDeviceProvider *g_pMyDriverProvider = nullptr;
 
-// HMD_DLL_EXPORT void *HmdDriverFactory(const char *pInterfaceName, int *pReturnCode)
-// {
-//     if (0 == strcmp(vr::IServerTrackedDeviceProvider_Version, pInterfaceName))
-//     {
-//         if (!g_pMyDriverProvider) {
-//             g_pMyDriverProvider = new MyTrackedDeviceProvider();
-//         }
-//         return g_pMyDriverProvider;
-//     }
-
-//     if (pReturnCode)
-//         *pReturnCode = vr::VRInitError_Init_InterfaceNotFound;
-
-//     return NULL;
-// }
-
+// MyTrackedDeviceProvider methods
+MyTrackedDeviceProvider::MyTrackedDeviceProvider() {} // Constructor
+MyTrackedDeviceProvider::~MyTrackedDeviceProvider() {} // Destructor
 
 // Implementation of IServerTrackedDeviceProvider methods
 vr::EVRInitError MyTrackedDeviceProvider::Init(vr::IVRDriverContext *pDriverContext)
 {
     VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext);
-    // TODO: Initialize your tracked devices here
+
+    // Initialize your tracked devices here
+    left_controller_ = std::make_unique<MyControllerDriver>();
+    if (left_controller_) {
+        vr::VRServerDriverHost()->TrackedDeviceAdded("my_left_controller_serial", vr::TrackedDeviceClass_Controller, left_controller_.get());
+    }
+
+    right_controller_ = std::make_unique<MyControllerDriver>();
+    if (right_controller_) {
+        vr::VRServerDriverHost()->TrackedDeviceAdded("my_right_controller_serial", vr::TrackedDeviceClass_Controller, right_controller_.get());
+    }
+
     return vr::VRInitError_None;
 }
 
 void MyTrackedDeviceProvider::Cleanup()
 {
     VR_CLEANUP_SERVER_DRIVER_CONTEXT();
-    // TODO: Cleanup your tracked devices here
-    g_pMyDriverProvider = nullptr; // Ensure we reset the global pointer
+    // Cleanup your tracked devices here
+    // unique_ptr will automatically clean up the controller objects
+    left_controller_.reset();
+    right_controller_.reset();
+    // g_pMyDriverProvider = nullptr; // This is handled by the caller or at a higher level
 }
 
 const char * const *MyTrackedDeviceProvider::GetInterfaceVersions()
 {
-    static const char * const versions[] = { vr::IServerTrackedDeviceProvider_Version, nullptr };
+    static const char * const versions[] = { vr::IServerTrackedDeviceProvider_Version, vr::IVRDisplayComponent_Version, nullptr }; // Added IVRDisplayComponent_Version for controllers
     return versions;
 }
 
 void MyTrackedDeviceProvider::RunFrame()
 {
-    // TODO: Update device poses or states here
+    // Update device poses or states here
+    if (left_controller_) {
+        left_controller_->RunFrame();
+    }
+    if (right_controller_) {
+        right_controller_->RunFrame();
+    }
 }
 
 bool MyTrackedDeviceProvider::ShouldBlockStandbyMode()
@@ -62,6 +73,8 @@ void MyTrackedDeviceProvider::LeaveStandby()
 {
 }
 
+} // namespace vr
+
 // Global entry point function
 #if defined(_WIN32)
 #define HMD_DLL_EXPORT extern "C" __declspec( dllexport )
@@ -75,12 +88,12 @@ HMD_DLL_EXPORT void *HmdDriverFactory(const char *pInterfaceName, int *pReturnCo
 {
     if (0 == strcmp(vr::IServerTrackedDeviceProvider_Version, pInterfaceName))
     {
-        if (!g_pMyDriverProvider) { // Check if already instantiated
-            g_pMyDriverProvider = new MyTrackedDeviceProvider();
+        if (!vr::g_pMyDriverProvider) { // Check if already instantiated
+            vr::g_pMyDriverProvider = new vr::MyTrackedDeviceProvider();
         }
         if (pReturnCode)
             *pReturnCode = vr::VRInitError_None; // Set to None explicitly on success
-        return g_pMyDriverProvider;
+        return vr::g_pMyDriverProvider;
     }
 
     if (pReturnCode)
