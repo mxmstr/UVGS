@@ -62,7 +62,6 @@ static void DecomposeHmdMatrix34IntoPose(const vr::HmdMatrix34_t& matrix, double
     */
 }
 
-
 MyControllerDriver::MyControllerDriver()
     : m_unObjectId(vr::k_unTrackedDeviceIndexInvalid),
       m_unPhysicalControllerIndex(vr::k_unTrackedDeviceIndexInvalid) {
@@ -257,6 +256,7 @@ void MyControllerDriver::RunFrame() {
     m_lastPose.result = vr::TrackingResult_Running_OutOfRange;
     m_lastPose.deviceIsConnected = true; // Virtual device is still connected
   }
+
 
   vr::VRServerDriverHost()->TrackedDevicePoseUpdated(m_unObjectId, m_lastPose, sizeof(vr::DriverPose_t));
 }
