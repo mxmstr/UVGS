@@ -9,6 +9,9 @@ class MyControllerDriver : public vr::ITrackedDeviceServerDriver {
   MyControllerDriver();
   virtual ~MyControllerDriver();
 
+  // Method to set the physical controller index
+  void SetPhysicalControllerIndex(uint32_t index);
+
   // Inherited via ITrackedDeviceServerDriver
   virtual vr::EVRInitError Activate(uint32_t unObjectId) override;
   virtual void Deactivate() override;
@@ -22,6 +25,8 @@ class MyControllerDriver : public vr::ITrackedDeviceServerDriver {
 
  private:
   uint32_t m_unObjectId; // Store the object ID
+  uint32_t m_unPhysicalControllerIndex; // Store the index of the physical controller
+  vr::DriverPose_t m_lastPose; // Stores the last known pose of the controller
 };
 
 }  // namespace vr
